@@ -1,0 +1,22 @@
+version: "3"
+services: 
+    go-echo:
+        build:
+            context: ./go-echo
+        volumes:
+            - ./go-echo/src:/go/src/go-echo 
+        ports: 
+            - 3000:3000
+        tty: true 
+
+    react:
+        build: 
+            context: ./react
+        volumes:
+            - ./react/app:/usr/src/app
+        tty: true
+        working_dir: /usr/src/app
+        command: sh -c "cd react-sample && yarn start"
+        ports:
+            - "8080:3000"
+            - "5000:5000"
