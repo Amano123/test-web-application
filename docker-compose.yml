@@ -3,6 +3,7 @@ services:
     go-echo:
         build:
             context: ./go-echo
+        container_name: go-echo
         volumes:
             - ./go-echo/src:/go/src/go-echo 
         ports: 
@@ -12,6 +13,7 @@ services:
     react:
         build: 
             context: ./react
+        container_name: react
         volumes:
             - ./react/app:/usr/src/app
         tty: true
