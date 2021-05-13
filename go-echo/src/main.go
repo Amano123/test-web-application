@@ -2,8 +2,21 @@ package main
 
 import (
   "net/http"
+
   "github.com/labstack/echo/v4"
   "github.com/labstack/echo/v4/middleware"
+)
+
+type (
+  user struct {
+      ID   string `json:"id"`
+      Name string `json:"name"`
+      Age  int    `json:"age"`
+  }
+)
+
+var (
+  users map[string]user
 )
 
 func main() {
@@ -23,5 +36,17 @@ func main() {
 
 // Handler
 func hello(c echo.Context) error {
-  return c.String(http.StatusOK, "Hello, World!")
+  users = map[string]user{
+    "1": user{
+        ID:   "1",
+        Name: "ジョナサン・ジョースター",
+        Age:  22,
+    },
+    "2": user{
+        ID:   "2",
+        Name: "ディオ・ブランドー",
+        Age:  25,
+        },
+    }
+  return c.JSON(http.StatusOK, users)
 }
