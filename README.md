@@ -10,7 +10,6 @@
 * Database(未実装)
   * elasticsearch
 
-
 ```
 docker-compose build
 docker-compose run react sh -c "cd react-sample && yarn install"
