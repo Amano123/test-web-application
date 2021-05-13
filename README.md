@@ -9,4 +9,3 @@
   * go
 * Database(未実装)
   * elasticsearch
-
