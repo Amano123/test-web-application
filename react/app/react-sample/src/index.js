@@ -27,13 +27,13 @@ class Exchange extends Component {
     };
   }
   componentDidMount() { //render直後に行いたい処理を書くところ
-    fetch("http://go-echo:3000") //api
+    fetch("http://localhost:4000") //api
       .then(res => res.json()) 
       .then(json => {
         console.log(json.rates);
         this.setState({
           isLoaded: true,
-          items: json.rates
+          items: json
         });
       });
   }
