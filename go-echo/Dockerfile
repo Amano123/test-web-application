@@ -11,3 +11,5 @@ ADD . /go/src/go-echo
 RUN go get github.com/labstack/echo \
 # &&  go get github.com/pilu/fresh
 &&  go get -u github.com/cosmtrek/air
+RUN go get github.com/genkiroid/cert/...
+
