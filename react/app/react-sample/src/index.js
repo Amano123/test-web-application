@@ -27,16 +27,10 @@ console.log(items);
     if (!isLoaded) {
       return <div>...Loading</div>;
     } else {
+      var obj = JSON.stringify(items);
       return (
         <div>
-          <ul>
-            {Object.keys(items[1]).map(key => (
-              <li key={key}>{key} - {items[1][key]}</li>
-            ))}
-            {Object.keys(items[2]).map(key => (
-              <li key={key}>{key} - {items[2][key]}</li>
-            ))}
-          </ul>
+          {obj}
         </div>
       );
     }
