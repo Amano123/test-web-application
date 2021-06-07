@@ -7,26 +7,13 @@ import (
   "encoding/json"
   "strings"
   "log"  
-  "fmt"
-
+  // "fmt"
 
   "github.com/elastic/go-elasticsearch/v7"
   "github.com/elastic/go-elasticsearch/v7/esapi"
 
   "github.com/labstack/echo/v4"
   "github.com/labstack/echo/v4/middleware"
-)
-
-type (
-  user struct {
-      ID   string `json:"id"`
-      Name string `json:"name"`
-      Age  int    `json:"age"`
-  }
-)
-
-var (
-  users map[string]user
 )
 
 func main() {
@@ -46,6 +33,9 @@ func main() {
 
 // Handler
 func hello(c echo.Context) error {
+  var (
+    r  map[string]interface{}
+  )
   // config setting for elasticsearch 
   cfg := elasticsearch.Config{
     Addresses: []string{
@@ -55,7 +45,7 @@ func hello(c echo.Context) error {
   }
   // elasticsearchのクライアント生成
   es, err := elasticsearch.NewClient(cfg)
-  // elasticsearchを取得できなかった場合
+  // 接続できなかった場合
   if err != nil {
     log.Fatalf("Error creating the client: %s", err)
   }
@@ -64,6 +54,33 @@ func hello(c echo.Context) error {
   // elasticsearchの構成情報を取得できなかった場合
   if err != nil {
     log.Fatalf("Error getting response: %s", err)
+  }
+
+  request := esapi.IndexRequest{
+    Index:      "test1",                                 // Index name
+    Body:       strings.NewReader(`{"title" : "Test"}`), // Document body
+    DocumentID: "3",                                     // Document id
+    Refresh:    "true",                                  // Refresh
+  }
+
+  res, err = request.Do(context.Background(), es)
+  if err != nil {
+    log.Fatalf("Error getting response: %s", err)
+  }
+  defer res.Body.Close()
+  
+  if res.IsError() {
+    log.Printf("[%s] Error indexing document ID=%d", res.Status(), 1)
+  } else {
+    // mapを使って処理してる
+    // mapの勉強が必要
+    var r map[string]interface{}
+    if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
+      log.Printf("Error parsing the response body: %s", err)
+    } else {
+      // 応答とバージョンを表示
+      log.Printf("[%s] %s; version=%d", res.Status(), r["result"], int(r["_version"].(float64)))
+    }
   }
 
   var buf bytes.Buffer
@@ -78,31 +95,10 @@ func hello(c echo.Context) error {
     log.Fatalf("Error encoding query: %s", err)
   }
 
-  users = map[string]user{
-    "1": user{
-        ID:   "1",
-        Name: "ジョナサン・ジョースター",
-        Age:  22,
-    },
-  }
-
-  request := esapi.IndexRequest{
-    Index:      "test1",                                  // Index name
-    Body:       strings.NewReader(`{"title" : "Test2"}`), // Document body
-    DocumentID: "3",   
-    Refresh:    "true",                                  // Refresh
-  }
-  res1, err1 := request.Do(context.Background(), es)
-  if err1 != nil {
-    log.Fatalf("Error getting response: %s", err1)
-  }
-  // res1.Body.Close()
-
-  log.Println("aaa : %s", res1)
-  // Perform the search request.
+  // 検索してる場所
   res, err = es.Search(
     es.Search.WithContext(context.Background()),
-    es.Search.WithIndex("test"),
+    es.Search.WithIndex("test1"),
     es.Search.WithBody(&buf),
     es.Search.WithTrackTotalHits(true),
     es.Search.WithPretty(),
@@ -110,13 +106,37 @@ func hello(c echo.Context) error {
   if err != nil {
     log.Fatalf("Error getting response: %s", err)
   }
+  defer res.Body.Close()
 
-  json, err := json.Marshal(res)
-  if err != nil {
-    return err
+  if res.IsError() {
+    var e map[string]interface{}
+    if err := json.NewDecoder(res.Body).Decode(&e); err != nil {
+      log.Fatalf("Error parsing the response body: %s", err)
+    } else {
+      // レスポンスとエラー情報の表示
+      log.Fatalf("[%s] %s: %s",
+        res.Status(),
+        e["error"].(map[string]interface{})["type"],
+        e["error"].(map[string]interface{})["reason"],
+      )
+    }
   }
 
-  fmt.Printf("%+v\n", string(json))
+  if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
+    log.Fatalf("Error parsing the response body: %s", err)
+  }
+  // 検索に引っかかった数とレスポンス時間表示
+  log.Printf(
+    "[%s] %d hits; took: %dms",
+    res.Status(),
+    int(r["hits"].(map[string]interface{})["total"].(map[string]interface{})["value"].(float64)),
+    int(r["took"].(float64)),
+  )
+  // 検索に引っかかったID、ドキュメントの表示
+  for _, hit := range r["hits"].(map[string]interface{})["hits"].([]interface{}) {
+    log.Printf(" * ID=%s, %s", hit.(map[string]interface{})["_id"], hit.(map[string]interface{})["_source"])
+  }
 
-  return c.JSON(http.StatusOK, res1)
+
+  return c.JSON(http.StatusOK, r)
 }
