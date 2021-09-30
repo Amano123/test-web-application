@@ -4,6 +4,8 @@ import (
   "net/http"
   "github.com/labstack/echo/v4"
   "github.com/labstack/echo/v4/middleware"
+  "encoding/json"
+  "fmt"
 )
 
 func main() {
@@ -23,5 +25,13 @@ func main() {
 
 // Handler
 func hello(c echo.Context) error {
-  return c.String(http.StatusOK, "Hello, World!")
+  prof := map[string]interface{}{
+		"name":   "Yamada Tarou",
+		"age":    18,
+		"height": 178.5,
+	}
+
+	profJson, _ := json.Marshal(prof)
+  fmt.Println(string(profJson))
+  return  c.JSON(http.StatusOK, prof)
 }
