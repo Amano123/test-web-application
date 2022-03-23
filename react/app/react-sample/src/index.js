@@ -23,7 +23,8 @@ class Exchange extends Component {
 
   render() {
     var { items, isLoaded } = this.state;
-console.log(items);
+    console.log(items);
+    
     if (!isLoaded) {
       return <div>...Loading</div>;
     } else {
