@@ -121,6 +121,7 @@ func hello(c echo.Context) error {
       )
     }
   }
+  
 
   if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
     log.Fatalf("Error parsing the response body: %s", err)
