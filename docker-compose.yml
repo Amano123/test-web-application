@@ -4,8 +4,8 @@ services:
         build:
             context: ./go-echo
         container_name: go-echo
-        volumes:
-            - ./go-echo/src:/go/src/go-echo 
+        # volumes:
+        #     - ./go-echo/src:/go/src/go-echo 
         ports: 
             - 3000:3000
         tty: true 
