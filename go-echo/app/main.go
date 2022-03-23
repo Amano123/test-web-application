@@ -26,21 +26,16 @@ func main() {
 
   // Routes
   e.GET("/", hello)
+  e.GET("/DB", DB)
 
   // Start server
   e.Logger.Fatal(e.Start(":3000"))
 }
 
-// Handler
-func hello(c echo.Context) error {
-  var (
-    r  map[string]interface{}
-  )
-  // config setting for elasticsearch 
+func DB(c echo.Context) error {
   cfg := elasticsearch.Config{
     Addresses: []string{
       "http://elasticsearch:9200",
-
     },
   }
   // elasticsearchのクライアント生成
@@ -55,7 +50,15 @@ func hello(c echo.Context) error {
   if err != nil {
     log.Fatalf("Error getting response: %s", err)
   }
+  return c.JSON(http.StatusOK, res)
 
+}
+
+// Handler
+func hello(c echo.Context) error {
+  var (
+    r  map[string]interface{}
+  )
   request := esapi.IndexRequest{
     Index:      "test1",                                 // Index name
     Body:       strings.NewReader(`{"title" : "Test"}`), // Document body
