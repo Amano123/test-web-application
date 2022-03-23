@@ -1,4 +1,3 @@
-
 import React, { Component } from 'react';
 import { render } from 'react-dom';
 
@@ -12,7 +11,7 @@ class Exchange extends Component {
   }
   componentDidMount() { //render直後に行いたい処理を書くところ
     fetch("http://localhost:1234") //api
-      .then(res => res.json())
+      .then(res => res.json()) 
       .then(json => {
         console.log(json.rates);
         this.setState({
@@ -25,6 +24,7 @@ class Exchange extends Component {
   render() {
     var { items, isLoaded } = this.state;
     console.log(items);
+    
     if (!isLoaded) {
       return <div>...Loading</div>;
     } else {

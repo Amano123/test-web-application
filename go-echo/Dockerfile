@@ -1,13 +1,15 @@
-FROM golang:alpine
-# アップデートとgitのインストール！！
-RUN apk add --update \
-&&  apk add git
-# appディレクトリの作成
-RUN mkdir /go/src/go-echo
-# ワーキングディレクトリの設定
-WORKDIR /go/src/go-echo
-ADD . /go/src/go-echo
+FROM golang:latest
 
-RUN go get github.com/labstack/echo \
-# &&  go get github.com/pilu/fresh
-&&  go get -u github.com/cosmtrek/air 
+# ワーキングディレクトリの設定
+WORKDIR /app
+COPY ./app /app
+
+RUN go mod init main \
+  && go mod tidy \
+  && go build
+
+RUN go install github.com/cosmtrek/air@latest
+
+ENV CGO_ENABLED=0 \
+  GOOS=linux \
+  GOARCH=amd64
