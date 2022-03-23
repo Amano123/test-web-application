@@ -22,7 +22,7 @@ services:
         command: sh -c "cd react-sample && yarn start"
         ports:
             - "8080:3000"
-            - "5000:5000"
+            - "5001:5000"
     
     nginx:
         build: 
