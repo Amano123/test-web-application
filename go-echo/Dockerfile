@@ -1,15 +1,11 @@
-FROM golang:latest
+FROM golang:1.18-alpine
 
-# ワーキングディレクトリの設定
-WORKDIR /app
-COPY ./app /app
+WORKDIR /go/src
+COPY src /go/src
 
-RUN go mod init main \
-  && go mod tidy \
-  && go build
+RUN apk upgrade --update && \
+    apk --no-cache add git
 
 RUN go install github.com/cosmtrek/air@latest
 
-ENV CGO_ENABLED=0 \
-  GOOS=linux \
-  GOARCH=amd64
+CMD ["air", "-c", ".air.toml"]
