@@ -1,15 +1,14 @@
 version: "3"
 services: 
-    go-echo:
-        build:
+    go-echo: # サービス名
+        build: # ビルドに使うDockerファイルのパス
             context: ./go-echo
-        container_name: go-echo
-        # volumes:
-        #     - ./go-echo/src:/go/src/go-echo 
+            dockerfile: Dockerfile
+        volumes:
+        - ./go-echo/src:/go/src
         ports: 
             - 3000:3000
-        command: air
-        tty: true 
+        tty: true # コンテナの永続化
 
     react:
         build: 
