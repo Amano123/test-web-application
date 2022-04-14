@@ -24,6 +24,8 @@ yarn-error.log*
 
 # Go-echo
 go-echo/src/tmp/*
+go-echo/src/go.mod
 
 # Elasticsearch
 elasticsearch/node_data/nodes/*
+src/tmp/build-errors.log
