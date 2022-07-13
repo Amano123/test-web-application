@@ -28,5 +28,5 @@ go-echo/src
 !main.go
 
 # Elasticsearch
-elasticsearch/node_data/nodes/*
 src/tmp/build-errors.log
+node_data/nodes/*
