@@ -16,9 +16,6 @@
 
 ```bash
 docker-compose build
-# Go
-docker-compose run --rm go-echo air init
-docker-compose run --rm go-echo  go mod tidy
 # React
 docker-compose run react sh -c "cd react-sample && yarn install"
 docker-compose up (-d)
