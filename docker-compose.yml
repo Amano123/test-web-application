@@ -38,7 +38,7 @@ services:
             dockerfile: dockerfile
         container_name: elasticsearch-sudachi
         volumes:
-            - ./node_data:/usr/share/elasticsearch/data
+            - ./elasticsearch/node_data:/usr/share/elasticsearch/data
         environment:
             - discovery.type=single-node
             - cluster.name=docker-cluster
