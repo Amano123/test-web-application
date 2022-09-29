@@ -10,7 +10,7 @@ class Exchange extends Component {
     };
   }
   componentDidMount() { //render直後に行いたい処理を書くところ
-    fetch("http://localhost:1234") //api
+    fetch("http://localhost:3000") //api
       .then(res => res.json()) 
       .then(json => {
         console.log(json.rates);
@@ -20,18 +20,21 @@ class Exchange extends Component {
         });
       });
   }
-
   render() {
     var { items, isLoaded } = this.state;
     console.log(items);
-    
     if (!isLoaded) {
       return <div>...Loading</div>;
     } else {
       var obj = JSON.stringify(items);
       return (
-        <div>
+        <div style={{
+          height: "calc(100vh - 2 * 80px)",
+        }}>
+          this is sample.
+        <p>
           {obj}
+        </p>
         </div>
       );
     }
