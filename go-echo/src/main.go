@@ -17,9 +17,10 @@ func main() {
 	// Echo instance
 	e := echo.New()
 
+	e.Use(middleware.CORS())
 	// Middleware
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
+	// e.Use(middleware.Logger())
+	// e.Use(middleware.Recover())
 
 	// Routes
 	e.GET("/", hello)
